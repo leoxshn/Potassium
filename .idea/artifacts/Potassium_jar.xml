@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Potassium:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Potassium_jar</output-path>
+    <root id="archive" name="Potassium.jar">
+      <element id="module-output" name="Potassium" />
+    </root>
+  </artifact>
+</component>
