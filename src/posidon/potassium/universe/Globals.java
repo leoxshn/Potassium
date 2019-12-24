@@ -10,9 +10,7 @@ public class Globals {
 
     private static final int MAX_TIME = 24000;
 
-    static void tick() {
-        time = (time < MAX_TIME) ? time + timeSpeed : 0;
-    }
+    static void tick() { time = (time < MAX_TIME) ? time + timeSpeed : 0; }
 
     public static boolean isNight() {
         return false;

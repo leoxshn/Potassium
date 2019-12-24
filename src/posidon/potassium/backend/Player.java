@@ -24,23 +24,28 @@ public class Player extends Thread {
     public float x, y, z, moveSpeed = 0.5f, jumpHeight = 0.5f;
     private List<PlayerMovementEvent> pendingMovementEvents = new ArrayList<>();
 
-    public void addPendingMovementEvent(PlayerMovementEvent movementEvent) { pendingMovementEvents.add(movementEvent); }
-    public void runPendingMovementEvents() {
+    public void addMovementEvent(PlayerMovementEvent movementEvent) { pendingMovementEvents.add(movementEvent); }
+    public void runMovementEvents() {
         List<PlayerMovementEvent> tmpPendingMovementEvents = pendingMovementEvents;
         pendingMovementEvents = new ArrayList<>();
-        for (PlayerMovementEvent movEvent : tmpPendingMovementEvents) movEvent.run(this);
-        if (tmpPendingMovementEvents.size() > 10) Window.println(name + " is sending too many packets!", color.RED);
+        for (PlayerMovementEvent movEvent : tmpPendingMovementEvents)
+            movEvent.run(this);
+        if (tmpPendingMovementEvents.size() > 10)
+            Window.println(name + " is sending too many packets!", color.RED);
         tmpPendingMovementEvents.clear();
     }
 
-    public Player(Socket s) {
-        super(s.getInetAddress().getHostAddress());
-        this.socket = s;
+    public Player(Socket socket) {
+        super(socket.getInetAddress().getHostAddress());
+        this.socket = socket;
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
             Object tmp = null;
-            do try { tmp = in.readObject(); } catch (ClassNotFoundException e) { Window.println(s.getInetAddress().getHostAddress() + " sent an unknown class"); } while (!(tmp instanceof PlayerJoinPacket));
+            do try { tmp = in.readObject(); }
+            catch (ClassNotFoundException e) {
+                Window.println(socket.getInetAddress().getHostAddress() + " sent an unknown class");
+            } while (!(tmp instanceof PlayerJoinPacket));
             PlayerJoinPacket packet = (PlayerJoinPacket) tmp;
             this.id = packet.id;
             this.name = packet.name;
@@ -65,7 +70,7 @@ public class Player extends Thread {
 
     private Object getSent() {
         try { return in.readObject(); }
-        catch (ClassNotFoundException e) { Window.println(name + " sent an unknown packet", color.RED); }
+        catch (ClassNotFoundException e) { Window.println(name + " sent an unknown packet!", color.RED); }
         //catch (IOException e) { Window.println(name + "'s connection was lost"); }
         catch (Exception ignore) {}
         return null;
@@ -77,7 +82,9 @@ public class Player extends Thread {
             in.close();
             socket.close();
         } catch (Exception ignore) {}
-        Window.println(PlayerHandler.getName(id) + " left", color.GREEN);
+        Window.print(name, color.YELLOW);
+        Window.println(" left", color.GRAY);
         PlayerHandler.remove(id);
+        pendingMovementEvents.clear();
     }
 }

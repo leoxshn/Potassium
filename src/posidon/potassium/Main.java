@@ -29,10 +29,14 @@ public class Main implements Runnable {
                 } catch (Exception e) { e.printStackTrace(); }
             }
             Window.println("Killing server...");
-            for (Player player : PlayerHandler.values()) player.disconnect();
+            kill();
             try { serverSocket.close(); }
             catch (IOException e) { e.printStackTrace(); }
         } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private void kill() {
+        for (Player player : PlayerHandler.values()) player.disconnect();
     }
 
     public static void main(String[] args) { new Thread(new Main()).start(); }

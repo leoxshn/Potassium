@@ -37,7 +37,7 @@ class PlanetWorld : Runnable {
     private fun tick() {
         Globals.tick()
         for (player in PlayerHandler.values()) {
-            player.runPendingMovementEvents()
+            player.runMovementEvents()
             val cx: Int = player.x.toInt() / Chunk.CHUNK_SIZE
             val cy: Int = player.y.toInt() / Chunk.CHUNK_SIZE
             val cz: Int = player.z.toInt() / Chunk.CHUNK_SIZE

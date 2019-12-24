@@ -28,7 +28,8 @@ public class PlayerMovementEvent extends PlayerEvent {
             player.z -= movX;
         }
         player.y += directionY * player.jumpHeight;
-        Window.println(player.name + "  ->  " + player.x + " / " + player.y + " / " + player.z, color.GRAY);
+        Window.print(player.name, color.YELLOW);
+        Window.println(" -> " + player.x + "/" + player.y + "/" + player.z, color.GRAY);
     } catch (Exception e) { Window.println(e.toString(), color.RED); } }
 
     public void setKeys(boolean[] keys) { this.keys = keys; }

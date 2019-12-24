@@ -6,7 +6,6 @@ import posidon.potassium.Window;
 import posidon.potassium.backend.events.PlayerMovementEvent;
 import posidon.potassium.packets.*;
 import posidon.potassium.ui.color;
-import posidon.potassium.universe.Globals;
 
 public class EventListener {
     public static void onEvent(Object event, int id) {
@@ -17,15 +16,13 @@ public class EventListener {
                 movementEvent.setDirection((float) packet.get("walk"));
                 movementEvent.setKeys((boolean[]) packet.get("keys"));
             } if (packet.containsKey("fly")) movementEvent.setDirectionY(((int) packet.get("fly") > 0 ? 1 : -1));
-            PlayerHandler.get(id).addPendingMovementEvent(movementEvent);
+            PlayerHandler.get(id).addMovementEvent(movementEvent);
         } else if (event instanceof PlayerJoinPacket) {
             PlayerJoinPacket packet = (PlayerJoinPacket) event;
             PlayerHandler.put(packet.id, packet.player);
-            Window.println(packet.name + " joined", color.GREEN);
-            Packet init = new Packet();
-            init.put("time", Globals.getTime());
-            //init.put("position", packet.player.info.getPosition());
-            packet.player.send(init);
+            Window.print(packet.name, color.YELLOW);
+            Window.println(" joined", color.GRAY);
+            packet.player.send(new InitInfoPacket(packet.player));
         } else if (event instanceof ChatMessage) {
             ChatMessage packet = (ChatMessage) event;
             Window.println(packet.message);
