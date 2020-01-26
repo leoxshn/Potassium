@@ -1,99 +1,115 @@
-package posidon.potassium;
+package posidon.potassium
 
-import posidon.potassium.ui.ScrollBar;
-import posidon.potassium.ui.color;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
+import posidon.potassium.ui.ScrollBar
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Font
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
+import java.io.IOException
+import javax.imageio.ImageIO
+import javax.swing.*
+import javax.swing.text.StyleConstants
+import javax.swing.text.StyledDocument
 
-public class Window {
-
-    private static JFrame window = new JFrame();;
-    private static JTextPane console;
-    private static JTextField input;
-    private static JScrollPane scroll;
-    private static StyledDocument document;
-    private static Commands commands = new Commands();
-
-    public static void create() {
-        Font monospace = new Font(Font.MONOSPACED, Font.PLAIN, 15);
-        window.setTitle("Potassium");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        try { window.setIconImage(ImageIO.read(Window.class.getResource("/ic.png"))); }
-        catch (IOException e) { e.printStackTrace(); }
-
-        console = new JTextPane();
-        console.setEditable(false);
-        console.setFont(monospace);
-        console.setOpaque(false);
-        console.setForeground(new Color(color.WHITE));
-        console.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        document = console.getStyledDocument();
-
-        input = new JTextField();
-        input.setEditable(true);
-        input.setFont(monospace);
-        input.setBorder(null);
-        input.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        input.setCaretColor(new Color(color.CARET));
-        input.setForeground(new Color(color.INPUT_TEXT_COLOR));
-        input.setBackground(new Color(color.INPUT_BG));
-        input.addActionListener(actionEvent -> {
-            String[] txt = input.getText().split(" ");
-            input.setText("");
-            commands.onCommand(txt);
-            scrollBottom();
-        });
-        input.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-
-            }
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-
-            }
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-
-            }
-        });
-
-        scroll = new JScrollPane(console);
-        scroll.setBorder(null);
-        scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false);
-        scroll.getVerticalScrollBar().setUI(new ScrollBar());
-
-        window.add(input, BorderLayout.SOUTH);
-        window.add(scroll, BorderLayout.CENTER);
-        window.setBackground(new Color(color.BG));
-        window.getContentPane().setBackground(new Color(color.BG));
-        window.setSize(800, 600);
-        window.setLocationRelativeTo(null);
-        window.setResizable(true);
-        window.setVisible(true);
+class Window {
+    private fun scrollTop() {
+        console!!.caretPosition = 0
     }
 
-    private void scrollTop() { console.setCaretPosition(0); }
-    private static void scrollBottom() { console.setCaretPosition(console.getDocument().getLength()); }
-    public static void println(String string) { print(string + "\n"); scrollBottom(); }
-    public static void println(String string, int color) { print(string + "\n", color); scrollBottom(); }
-    public static void print(String string) { print(string, color.WHITE); }
-    public static void print(String string, int color) {
-        Style style = console.addStyle("Style", null);
-        StyleConstants.setForeground(style, new Color(color));
-        try { document.insertString(document.getLength(), string, style); }
-        catch (Exception e) { e.printStackTrace(); }
-    }
-    public static void clear() {
-        try { document.remove(0, document.getLength()); }
-        catch (Exception e) { e.printStackTrace(); }
+    companion object {
+        private val window = JFrame()
+        private var console: JTextPane? = null
+        private var input: JTextField? = null
+        private var scroll: JScrollPane? = null
+        private var document: StyledDocument? = null
+        private val commands = Commands()
+        
+        fun create() {
+            val monospace = Font(Font.MONOSPACED, Font.PLAIN, 15)
+            window.title = "Potassium"
+            window.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+            try {
+                window.iconImage = ImageIO.read(Window::class.java.getResource("/ic.png"))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            console = JTextPane()
+            console!!.isEditable = false
+            console!!.font = monospace
+            console!!.isOpaque = false
+            console!!.foreground = Color(posidon.potassium.ui.Color.WHITE)
+            console!!.border = BorderFactory.createEmptyBorder(12, 12, 12, 12)
+            document = console!!.styledDocument
+            input = JTextField()
+            input!!.isEditable = true
+            input!!.font = monospace
+            input!!.border = null
+            input!!.border = BorderFactory.createEmptyBorder(12, 12, 12, 12)
+            input!!.caretColor = Color(posidon.potassium.ui.Color.CARET)
+            input!!.foreground = Color(posidon.potassium.ui.Color.INPUT_TEXT_COLOR)
+            input!!.background = Color(posidon.potassium.ui.Color.INPUT_BG)
+            input!!.addActionListener { actionEvent: ActionEvent? ->
+                val txt = input!!.text.split(" ".toRegex()).toTypedArray()
+                input!!.text = ""
+                commands.onCommand(txt)
+                scrollBottom()
+            }
+            input!!.addKeyListener(object : KeyListener {
+                override fun keyTyped(keyEvent: KeyEvent) {}
+                override fun keyPressed(keyEvent: KeyEvent) {}
+                override fun keyReleased(keyEvent: KeyEvent) {}
+            })
+            scroll = JScrollPane(console)
+            scroll!!.border = null
+            scroll!!.isOpaque = false
+            scroll!!.viewport.isOpaque = false
+            scroll!!.verticalScrollBar.setUI(ScrollBar())
+            window.add(input, BorderLayout.SOUTH)
+            window.add(scroll, BorderLayout.CENTER)
+            window.background = Color(posidon.potassium.ui.Color.BG)
+            window.contentPane.background = Color(posidon.potassium.ui.Color.BG)
+            window.setSize(800, 600)
+            window.setLocationRelativeTo(null)
+            window.isResizable = true
+            window.isVisible = true
+        }
+
+        private fun scrollBottom() {
+            console!!.caretPosition = console!!.document.length
+        }
+
+        
+        fun println(string: String) {
+            print(string + "\n")
+            scrollBottom()
+        }
+
+        
+        fun println(string: String, color: Int) {
+            print(string + "\n", color)
+            scrollBottom()
+        }
+
+        
+        @JvmOverloads
+        fun print(string: String?, color: Int = posidon.potassium.ui.Color.WHITE) {
+            val style = console!!.addStyle("Style", null)
+            StyleConstants.setForeground(style, Color(color))
+            try {
+                document!!.insertString(document!!.length, string, style)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        fun clear() {
+            try {
+                document!!.remove(0, document!!.length)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

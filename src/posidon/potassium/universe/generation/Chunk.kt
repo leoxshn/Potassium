@@ -1,12 +1,21 @@
-package posidon.potassium.universe.generation;
+package posidon.potassium.universe.generation
 
-import posidon.potassium.universe.block.Block;
+import posidon.potassium.universe.block.Block
 
-public class Chunk {
-    public static final int CHUNK_SIZE = 12;
-    private Block[] blocks = new Block[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
-    public Block getBlock(int x, int y, int z) { return blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z]; }
-    public void setBlock(Block block, int x, int y, int z) { blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z] = block; }
+class Chunk {
 
-    public Block[] getBlocks() { return blocks; }
+    @JvmField
+    val blocks = arrayOfNulls<Block>(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE)
+
+    fun getBlock(x: Int, y: Int, z: Int): Block? {
+        return blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z]
+    }
+
+    fun setBlock(block: Block?, x: Int, y: Int, z: Int) {
+        blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z] = block
+    }
+
+    companion object {
+        const val CHUNK_SIZE = 12
+    }
 }

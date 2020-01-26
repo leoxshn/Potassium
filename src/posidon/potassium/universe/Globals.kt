@@ -1,38 +1,36 @@
-package posidon.potassium.universe;
+package posidon.potassium.universe
 
-import posidon.potassium.backend.Sender;
-import posidon.potassium.packets.Packet;
+import posidon.potassium.backend.Sender
+import posidon.potassium.packets.Packet
 
-public class Globals {
+object Globals {
 
-    private static double time;
-    private static int timeSpeed = 1;
+    @JvmStatic
+    var time = 0.0
+        set(value) {
+            field = value
+            val update = Packet()
+            update["time"] = time
+            Sender.sendToAllPlayers(update)
+        }
 
-    private static final int MAX_TIME = 24000;
+    var timeSpeed = 1
+        set(value) {
+            field = value
+            val update = Packet()
+            update["timeSpeed"] = timeSpeed
+            Sender.sendToAllPlayers(update)
+        }
 
-    static void tick() { time = (time < MAX_TIME) ? time + timeSpeed : 0; }
+    private const val MAX_TIME = 24000
 
-    public static boolean isNight() {
-        return false;
+    fun tick() {
+        time = if (time < MAX_TIME) time + timeSpeed else 0.0
     }
 
-    public static boolean isDay() {
-        return false;
-    }
+    val isNight: Boolean
+        get() = false
 
-    public static double getTime() { return time; }
-    public static void setTime(double time) {
-        Globals.time = time;
-        Packet update = new Packet();
-        update.put("time", Globals.time);
-        Sender.sendToAllPlayers(update);
-    }
-
-    public static int getTimeSpeed() { return timeSpeed; }
-    public static void setTimeSpeed(int timeSpeed) {
-        Globals.timeSpeed = timeSpeed;
-        Packet update = new Packet();
-        update.put("timeSpeed", Globals.timeSpeed);
-        Sender.sendToAllPlayers(update);
-    }
+    val isDay: Boolean
+        get() = false
 }

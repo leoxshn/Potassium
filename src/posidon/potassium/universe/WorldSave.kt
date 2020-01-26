@@ -1,19 +1,15 @@
-package posidon.potassium.universe;
+package posidon.potassium.universe
 
-import posidon.potassium.backend.Player;
+import java.io.Serializable
+import java.util.*
 
-import java.io.Serializable;
-import java.util.HashMap;
+class WorldSave : Serializable {
 
-public class WorldSave implements Serializable {
+    var time: Double = Globals.time
 
-    private static final long serialVersionUID = 1;
-    public double time;
-
-    // x, y, z, health, uranium
-    public static HashMap<Integer, int[]> playerInfo = new HashMap<Integer, int[]>();
-
-    public WorldSave() {
-        this.time = Globals.getTime();
+    companion object {
+        private const val serialVersionUID: Long = 1
+        // x, y, z, health, uranium
+        var playerInfo = HashMap<Int, IntArray>()
     }
 }

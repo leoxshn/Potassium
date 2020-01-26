@@ -1,13 +1,11 @@
-package posidon.potassium.universe.generation;
+package posidon.potassium.universe.generation
 
-import java.util.Random;
+import java.util.*
 
-public abstract class ChunkGenerator {
-    protected final Random random;
-    protected final long seed;
-    public ChunkGenerator(long seed) {
-        this.seed = seed;
-        random = new Random(seed);
-    }
-    protected abstract Chunk genChunk(int x, int y, int z);
+abstract class ChunkGenerator(protected val seed: Long) {
+
+    protected val random: Random = Random(seed)
+
+    abstract fun genChunk(x: Int, y: Int, z: Int): Chunk
+
 }

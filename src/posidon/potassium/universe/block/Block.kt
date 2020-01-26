@@ -1,24 +1,23 @@
-package posidon.potassium.universe.block;
+package posidon.potassium.universe.block
 
-import java.io.Serializable;
+import java.io.Serializable
 
-public class Block implements Serializable {
-    private static final long serialVersionUID = 1;
-    public final String name;
-    public final float hardness;
-    public final float emission;
+class Block(val name: String, val hardness: Float, val emission: Float) : Serializable {
+    fun tick() {}
 
-    public Block(String name, float hardness, float emission) {
-        this.name = name;
-        this.hardness = hardness;
-        this.emission = emission;
+    companion object {
+        private const val serialVersionUID: Long = 1
+        fun wood(): Block {
+            return Block("wood", 0.5f, 0f)
+        }
+
+        fun stone(): Block {
+            return Block("stone", 1f, 0f)
+        }
+
+        fun grass(): Block {
+            return Block("grass", 0.1f, 0f)
+        }
     }
 
-    public void tick() {
-
-    }
-
-    public static Block wood() { return new Block("wood", 0.5f, 0); }
-    public static Block stone() { return new Block("stone", 1f, 0); }
-    public static Block grass() { return new Block("grass", 0.1f, 0); }
 }

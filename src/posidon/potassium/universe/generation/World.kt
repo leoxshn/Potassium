@@ -1,22 +1,27 @@
-package posidon.potassium.universe.generation;
+package posidon.potassium.universe.generation
 
-import posidon.potassium.universe.util.Vec3i;
-import java.util.HashMap;
+import posidon.potassium.universe.util.Vec3i
+import java.util.*
 
-public class World {
+open class World(private val generator: ChunkGenerator) {
 
-    private ChunkGenerator generator;
-    public final HashMap<Vec3i, Chunk> chunks = new HashMap<>();
+    val chunks = HashMap<Vec3i, Chunk?>()
 
-    public World(ChunkGenerator generator) { this.generator = generator; }
+    fun getChunkFromCoords(ax: Float, ay: Float, az: Float): Chunk? {
+        return getChunk(ax.toInt() / Chunk.CHUNK_SIZE, ay.toInt() / Chunk.CHUNK_SIZE, az.toInt() / Chunk.CHUNK_SIZE)
+    }
 
-    public Chunk getChunkFromCoords(float ax, float ay, float az) { return getChunk((int)ax/Chunk.CHUNK_SIZE, (int)ay/Chunk.CHUNK_SIZE, (int)az/Chunk.CHUNK_SIZE); }
-    public Chunk getChunk(int cx, int cy, int cz) { return chunks.get(new Vec3i(cx, cy, cz)); }
+    fun getChunk(cx: Int, cy: Int, cz: Int): Chunk? {
+        return chunks[Vec3i(cx, cy, cz)]
+    }
 
-    public void genChunkFromCoords(float ax, float ay, float az) { genChunk((int)ax/Chunk.CHUNK_SIZE, (int)ay/Chunk.CHUNK_SIZE, (int)az/Chunk.CHUNK_SIZE); }
-    public Chunk genChunk(int cx, int cy, int cz) {
-        Chunk chunk = generator.genChunk(cx * Chunk.CHUNK_SIZE, cy * Chunk.CHUNK_SIZE, cz * Chunk.CHUNK_SIZE);
-        chunks.put(new Vec3i(cx, cy, cz), chunk);
-        return chunk;
+    fun genChunkFromCoords(ax: Float, ay: Float, az: Float) {
+        genChunk(ax.toInt() / Chunk.CHUNK_SIZE, ay.toInt() / Chunk.CHUNK_SIZE, az.toInt() / Chunk.CHUNK_SIZE)
+    }
+
+    fun genChunk(cx: Int, cy: Int, cz: Int): Chunk {
+        val chunk = generator.genChunk(cx * Chunk.CHUNK_SIZE, cy * Chunk.CHUNK_SIZE, cz * Chunk.CHUNK_SIZE)
+        chunks[Vec3i(cx, cy, cz)] = chunk
+        return chunk
     }
 }

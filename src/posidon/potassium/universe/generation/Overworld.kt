@@ -1,8 +1,3 @@
-package posidon.potassium.universe.generation;
+package posidon.potassium.universe.generation
 
-public class Overworld extends World {
-
-    public Overworld() {
-        super(new OverworldGenerator(235254625));
-    }
-}
+class Overworld : World(OverworldGenerator(235254625))

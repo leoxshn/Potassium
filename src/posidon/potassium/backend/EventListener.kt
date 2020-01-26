@@ -1,35 +1,34 @@
-package posidon.potassium.backend;
+package posidon.potassium.backend
 
-import posidon.potassium.Commands;
-import posidon.potassium.Main;
-import posidon.potassium.Window;
-import posidon.potassium.backend.events.PlayerMovementEvent;
-import posidon.potassium.packets.*;
-import posidon.potassium.ui.color;
+import posidon.potassium.Commands
+import posidon.potassium.Main
+import posidon.potassium.Window
+import posidon.potassium.backend.events.PlayerMovementEvent
+import posidon.potassium.packets.*
+import posidon.potassium.ui.Color
 
-public class EventListener {
-    public static void onEvent(Object event, int id) {
-        if (event instanceof Packet) {
-            Packet packet = (Packet) event;
-            PlayerMovementEvent movementEvent = new PlayerMovementEvent();
+object EventListener {
+    fun onEvent(event: Any?, id: Int) {
+        if (event is Packet) {
+            val packet = event
+            val movementEvent = PlayerMovementEvent()
             if (packet.containsKey("walk")) {
-                movementEvent.setDirection((float) packet.get("walk"));
-                movementEvent.setKeys((boolean[]) packet.get("keys"));
-            } if (packet.containsKey("fly")) movementEvent.setDirectionY(((int) packet.get("fly") > 0 ? 1 : -1));
-            PlayerHandler.get(id).addMovementEvent(movementEvent);
-        } else if (event instanceof PlayerJoinPacket) {
-            PlayerJoinPacket packet = (PlayerJoinPacket) event;
-            PlayerHandler.put(packet.id, packet.player);
-            Window.print(packet.name, color.YELLOW);
-            Window.println(" joined", color.GRAY);
-            packet.player.send(new InitInfoPacket(packet.player));
-        } else if (event instanceof ChatMessage) {
-            ChatMessage packet = (ChatMessage) event;
-            Window.println(packet.message);
-        } else if (event instanceof AuthCommand) {
-            AuthCommand authCommand = (AuthCommand) event;
-            if (authCommand.key.equals(Main.key)) new Commands().onCommand(authCommand.cmd);
-            else Window.println("Invalid key!", color.RED);
+                movementEvent.setDirection(packet["walk"] as Float)
+                movementEvent.setKeys(packet["keys"] as BooleanArray)
+            }
+            if (packet.containsKey("fly")) movementEvent.setDirectionY(if (packet["fly"] as Int > 0) 1 else -1)
+            PlayerHandler.get(id)!!.addMovementEvent(movementEvent)
+        } else if (event is PlayerJoinPacket) {
+            val packet = event
+            PlayerHandler.put(packet.id, packet.player)
+            Window.print(packet.name, Color.YELLOW)
+            Window.println(" joined", Color.GRAY)
+            packet.player.send(InitInfoPacket(packet.player))
+        } else if (event is ChatMessage) {
+            Window.println(event.message)
+        } else if (event is AuthCommand) {
+            val authCommand = event
+            if (authCommand.key == Main.key) Commands().onCommand(authCommand.cmd) else Window.println("Invalid key!", Color.RED)
         }
     }
 }

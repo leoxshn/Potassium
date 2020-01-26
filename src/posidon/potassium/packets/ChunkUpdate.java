@@ -10,7 +10,7 @@ public class ChunkUpdate implements Serializable {
     public int x, y, z;
     public Block[] blocks;
     public ChunkUpdate(Chunk chunk, int x, int y, int z) {
-        blocks = chunk.getBlocks();
+        blocks = chunk.blocks;
         this.x = x;
         this.y = y;
         this.z = z;
