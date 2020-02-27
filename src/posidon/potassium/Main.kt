@@ -1,10 +1,8 @@
 package posidon.potassium
 
-import posidon.potassium.Window.Companion.create
-import posidon.potassium.Window.Companion.println
 import posidon.potassium.backend.Player
-import posidon.potassium.backend.PlayerHandler
-import posidon.potassium.ui.Color
+import posidon.potassium.backend.Players
+import posidon.potassium.tools.print
 import posidon.potassium.universe.PlanetWorld
 import java.io.BufferedReader
 import java.io.IOException
@@ -13,62 +11,58 @@ import java.net.ServerSocket
 import java.net.URL
 
 class Main : Runnable {
-    override fun run() {
-        create()
-        println("Setting up networking stuff...", Color.WHITE)
-        try {
-            ServerSocket(port).use { serverSocket ->
-                Thread(PlanetWorld(), "world").start()
-                while (running) {
-                    try {
-                        val clientSocket = serverSocket.accept()
-                        Player(clientSocket).start()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-                println("Killing server...")
-                kill()
-                try {
-                    serverSocket.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
 
-    private fun kill() {
-        for (player in PlayerHandler.values()) player.disconnect()
+    override fun run() {
+        Thread(Console()).start()
+        Console.beforeCmdLine {
+            Console.println("Setting up networking stuff...")
+        }
+        try {
+            socket = ServerSocket(port)
+            Thread(PlanetWorld(), "world").start()
+            while (running) {
+                try {
+                    val clientSocket = socket.accept()
+                    Player(clientSocket).start()
+                } catch (e: Exception) { e.print() }
+            }
+            for (player in Players) player.disconnect()
+            try { socket.close() }
+            catch (e: Exception) { e.print() }
+        } catch (e: IOException) { e.print() }
     }
 
     companion object {
-        var key = "leoleo"
+
+        lateinit var socket: ServerSocket
+
         private const val port = 2512
         var running = true
 
-        val extIP: String
+        val extIP: String?
             get() {
-                var out: String
+                var out: String? = null
                 try {
                     val ipUrl = URL("http://checkip.amazonaws.com")
-                    var `in`: BufferedReader? = null
+                    var input: BufferedReader? = null
                     try {
-                        `in` = BufferedReader(InputStreamReader(ipUrl.openStream()))
-                        out = `in`.readLine()
-                    } catch (e: Exception) {
-                        out = "error: " + e.message
-                    }
-                    `in`?.close()
-                } catch (e: Exception) {
-                    out = "error: " + e.message
-                }
+                        input = BufferedReader(InputStreamReader(ipUrl.openStream()))
+                        out = input.readLine()
+                    } catch (e: Exception) {}
+                    input?.close()
+                } catch (e: Exception) {}
                 return out
             }
     }
 }
 
-
 fun main() = Thread(Main()).start()
+
+fun stop() {
+    Console.println("Stopping server...")
+    Main.running = false
+    for (player in Players) player.disconnect()
+    try { Main.socket.close() }
+    catch (e: Exception) { e.print() }
+}
+

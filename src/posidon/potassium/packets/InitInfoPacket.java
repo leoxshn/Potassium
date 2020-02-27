@@ -13,10 +13,10 @@ public class InitInfoPacket implements Serializable {
 
     public InitInfoPacket(Player player) {
         time = Globals.getTime();
-        moveSpeed = player.moveSpeed;
-        jumpHeight = player.jumpHeight;
-        x = player.x;
-        y = player.y;
-        z = player.z;
+        moveSpeed = player.getMoveSpeed();
+        jumpHeight = player.getJumpHeight();
+        x = player.getX();
+        y = player.getY();
+        z = player.getZ();
     }
 }

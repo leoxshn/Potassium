@@ -1,17 +1,20 @@
 package posidon.potassium.backend.events
 
-import posidon.potassium.Window
+import posidon.potassium.Console
 import posidon.potassium.backend.Player
-import posidon.potassium.ui.Color
+import posidon.potassium.tools.print
+import kotlin.math.cos
+import kotlin.math.sin
 
 class PlayerMovementEvent : PlayerEvent() {
     private var keys = BooleanArray(4)
     private var direction = 0f
     private var directionY = 0
-    public override fun run(player: Player) {
+
+    override fun run(player: Player) {
         try {
-            val movX = Math.sin(Math.toRadians(direction.toDouble())).toFloat() * player.moveSpeed
-            val movZ = Math.cos(Math.toRadians(direction.toDouble())).toFloat() * player.moveSpeed
+            val movX = sin(Math.toRadians(direction.toDouble())).toFloat() * player.moveSpeed
+            val movZ = cos(Math.toRadians(direction.toDouble())).toFloat() * player.moveSpeed
             if (keys[0]) {
                 player.x -= movX
                 player.z -= movZ
@@ -29,22 +32,14 @@ class PlayerMovementEvent : PlayerEvent() {
                 player.z -= movX
             }
             player.y += directionY * player.jumpHeight
-            Window.print(player.playerName, Color.YELLOW)
-            Window.println(" -> " + player.x + "/" + player.y + "/" + player.z, Color.GRAY)
-        } catch (e: Exception) {
-            Window.println(e.toString(), Color.RED)
-        }
+            Console.beforeCmdLine {
+                Console.printInfo(player.playerName,
+                        " -> " + player.x + "/" + player.y + "/" + player.z)
+            }
+        } catch (e: Exception) { e.print() }
     }
 
-    fun setKeys(keys: BooleanArray) {
-        this.keys = keys
-    }
-
-    fun setDirection(direction: Float) {
-        this.direction = direction
-    }
-
-    fun setDirectionY(directionY: Int) {
-        this.directionY = directionY
-    }
+    fun setKeys(keys: BooleanArray) { this.keys = keys }
+    fun setDirection(direction: Float) { this.direction = direction }
+    fun setDirectionY(directionY: Int) { this.directionY = directionY }
 }

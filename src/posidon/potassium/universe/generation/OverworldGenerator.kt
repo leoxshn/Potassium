@@ -1,5 +1,6 @@
 package posidon.potassium.universe.generation
 
+import posidon.potassium.tools.OpenSimplexNoise
 import posidon.potassium.universe.block.Block
 
 class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {

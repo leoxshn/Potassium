@@ -1,10 +1,9 @@
 package posidon.potassium.universe
 
+import posidon.potassium.Console
 import posidon.potassium.Main
-import posidon.potassium.Window
-import posidon.potassium.backend.PlayerHandler
+import posidon.potassium.backend.Players
 import posidon.potassium.packets.ChunkUpdate
-import posidon.potassium.ui.Color
 import posidon.potassium.universe.generation.Chunk
 import posidon.potassium.universe.generation.Overworld
 import java.util.concurrent.TimeUnit
@@ -13,9 +12,10 @@ class PlanetWorld : Runnable {
 
     override fun run() {
         ////START/////////////////////////////////////
-        Window.println("Starting the world...", Color.WHITE)
-
-        Window.println("Done!", Color.GREEN)
+        Console.beforeCmdLine {
+            Console.println("Starting the world...")
+            Console.println("Done!")
+        }
         ////LOOP//////////////////////////////////////
         var lastTime: Long = System.nanoTime()
         val amountOfTicks: Double = 60.0
@@ -36,7 +36,7 @@ class PlanetWorld : Runnable {
 
     private fun tick() {
         Globals.tick()
-        for (player in PlayerHandler.values()) {
+        for (player in Players) {
             player.runMovementEvents()
             val cx: Int = player.x.toInt() / Chunk.CHUNK_SIZE
             val cy: Int = player.y.toInt() / Chunk.CHUNK_SIZE
